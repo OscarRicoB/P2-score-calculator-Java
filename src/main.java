@@ -31,6 +31,10 @@ public class main {
 		try {
 		      File myObj = new File(score_file);
 		      Scanner myReader = new Scanner(myObj);
+		      if(!myReader.hasNextInt()) {
+		    	  System.err.println("Error: the first line need to be an integer equal or lower than 10000");
+					System.exit(1);
+		      }
 		      rounds = myReader.nextInt();
 		      if (rounds < 0 && rounds > 10000) {
 				System.err.println("Error: the first line need to be an integer equal or lower than 10000");
@@ -41,16 +45,18 @@ public class main {
 		        String data = myReader.nextLine();
 		        Matcher m = p.matcher(data);
 		        if( m.matches() ) {
-		        	count++;
 		        	List<Integer> tempScore = splitToIntArr(data, "\\s");
 		        	//System.out.println(tempScore.toString());
 		        	Integer obj = Collections.max(tempScore);
 		        	int index = tempScore.indexOf(obj);
+		        	player1.add(count,0);
+		        	player2.add(count,0);
 		        	if (index == 0) {
-		        		player1.add(Math.abs(tempScore.get(0) - tempScore.get(1)));
+		        		player1.add(count,Math.abs(tempScore.get(0) - tempScore.get(1)));
 					}else if(index == 1) {
-						player2.add(Math.abs(tempScore.get(0) - tempScore.get(1)));
+						player2.add(count,Math.abs(tempScore.get(0) - tempScore.get(1)));
 					}
+		        	count++;
 		        }
 		      }
 		      myReader.close();
@@ -79,9 +85,18 @@ public class main {
 		      FileWriter myWriter = new FileWriter(output_file);
 		      Integer maxP1 = Collections.max(player1);
 		      Integer maxP2 = Collections.max(player2);
-		      if( maxP1 > maxP2) {
+		      System.out.println(maxP1 +" - "+ maxP2);
+		      if( maxP1.equals(maxP2) ){
+		    	  int roundP1 = player1.indexOf(maxP1);
+		    	  int roundP2 = player2.indexOf(maxP1);
+		    	  if (roundP1 < roundP2) {
+		    		  myWriter.write("1 "+maxP1);
+		    	  } else {
+		    		  myWriter.write("2 "+maxP2);
+		    	  }
+		      }else if( maxP1 > maxP2) {
 		    	myWriter.write("1 "+maxP1);
-		      }else {
+		      }else { 
 		    	  myWriter.write("2 "+maxP2);
 		      }
 		      myWriter.close();
